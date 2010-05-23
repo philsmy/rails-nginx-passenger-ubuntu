@@ -112,7 +112,7 @@ Installing git
 Nginx
 -------
 
-Automatically install Nginx with Passenger com
+Automatically install Nginx compiled with Passenger & SSL into /opt/ruby/
 
     /opt/ruby/bin/passenger-install-nginx-module --auto --prefix=/opt/nginx/ --auto-download --extra-configure-flags=--with-http_ssl_module
 
@@ -122,7 +122,7 @@ Nginx init script
 
 More information on http://wiki.nginx.org/Nginx-init-ubuntu
 
-    cd
+    cd ~/src
     git clone git://github.com/jnstq/rails-nginx-passenger-ubuntu.git
     sudo mv rails-nginx-passenger-ubuntu/nginx/nginx /etc/init.d/nginx
     sudo chown root:root /etc/init.d/nginx
