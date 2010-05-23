@@ -112,7 +112,7 @@ Installing git
 Nginx
 -------
 
-Automatically install Nginx compiled with Passenger & SSL into /opt/ruby/
+Automatically install Nginx compiled with Passenger & SSL into /opt/nginx/
 
     /opt/ruby/bin/passenger-install-nginx-module --auto --prefix=/opt/nginx/ --auto-download --extra-configure-flags=--with-http_ssl_module
 
