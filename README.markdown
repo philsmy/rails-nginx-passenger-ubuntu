@@ -1,7 +1,7 @@
-rails-nginx-passenger-ubuntu
+rails-nginx-passenger-ubuntu stack
 ============================
 
-My notes on setting up a simple production server with ubuntu, nginx, passenger and mysql for rails.
+My notes on setting up a simple production server with Ubuntu 10.04 LTS, Nginx, Passenger, Ruby Enterprise Edition and Mysql for Rails 2.3.5
 
 Aliases
 -------
@@ -13,6 +13,13 @@ edit .bashrc and uncomment the loading of .bash_aliases
 If you have trouble with PATH that changes when doing sudo, see http://stackoverflow.com/questions/257616/sudo-changes-path-why then add the following line to the same file
 
     echo "alias sudo='sudo env PATH=$PATH'" >> ~/.bash_aliases
+
+Edit /etc/ssh/sshd_config and add the following to the bottom of the file:
+
+    PermitUserEnvironment yes
+Then reboot sshd by running:
+
+    /etc/init.d/ssh reload
     
 
 Update and upgrade the system
@@ -21,7 +28,7 @@ Update and upgrade the system
     sudo apt-get update
     sudo apt-get upgrade
 
-Configure timezone
+Configure timezone (If you didn't already when installing Ubuntu)
 -------------------
 
     sudo dpkg-reconfigure tzdata
@@ -54,9 +61,7 @@ Install mysql
 
 This should be installed before Ruby Enterprise Edition becouse that will install the mysql gem.
 
-    sudo apt-get install mysql-server libmysqlclient15-dev
-    
-    
+    sudo apt-get install mysql-server libmysqlclient15-dev    
 Gemrc
 -------
 
@@ -72,7 +77,7 @@ Add the following lines to ~/.gemrc, this will speed up gem installation and pre
 Ruby Enterprise Edition
 ------------------------
 
-Check for newer version at http://www.rubyenterpriseedition.com/download.html
+Check for newer version at [http://www.rubyenterpriseedition.com/download.html](http://www.rubyenterpriseedition.com/download.html)
 
 Install package required by ruby enterprise, C compiler, Zlib development headers, OpenSSL development headers, GNU Readline development headers
 
@@ -107,33 +112,11 @@ Installing git
 Nginx
 -------
 
-    sudo /opt/ruby/bin/passenger-install-nginx-module
+Automatically install Nginx with Passenger com
 
-Select option 1. Yes: download, compile and install Nginx for me. (recommended)
+    /opt/ruby/bin/passenger-install-nginx-module --auto --prefix=/opt/nginx/ --auto-download --extra-configure-flags=--with-http_ssl_module
 
-When finished, verify nginx source code is located under /tmp
 
-    $ ll /tmp/
-    drwxr-xr-x 8 deploy deploy    4096 2009-04-18 17:48 nginx-0.6.36
-    -rw-r--r-- 1 root   root    528425 2009-04-02 08:49 nginx-0.6.36.tar.gz
-    drwxrwxrwx 7   1169   1169    4096 2009-04-18 17:56 pcre-7.8
-    -rw-r--r-- 1 root   root   1168513 2009-04-18 17:51 pcre-7.8.tar.gz
-    
-Run the passenger-install-nginx-module once more if you want to add --with-http_ssl_module 
-
-    $ sudo /opt/ruby/bin/passenger-install-nginx-module
-    
-Select option 2. No: I want to customize my Nginx installation. (for advanced users)
-
-When installation script ask, "Where is your Nginx source code located?" Enter:
-
-    /tmp/nginx-0.6.36
-
-On, extra arguments to pass to configure script add
-
-     --with-http_ssl_module
-     
-     
 Nginx init script
 -------------------
 
@@ -198,6 +181,24 @@ convert: error while loading shared libraries: libMagickCore.so.2: cannot open s
 Install RMagick
  
     sudo /opt/ruby/bin/ruby /opt/ruby/bin/gem install rmagick
+
+Install Bundler
+---------------
+
+Bundler is arguably the best ruby gem manager ever written. Install it!
+
+    sudo gem install bundler
+
+Install Nokogiri
+----------------
+
+Nokogiri dependencies
+
+    sudo apt-get install libxslt-dev libxml2-dev
+
+Install Nokogiri gem
+
+    sudo gem install nokogiri
 
 Test a rails applicaton with nginx
 ----------------------------------
