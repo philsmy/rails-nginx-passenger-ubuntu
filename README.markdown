@@ -16,14 +16,6 @@ If you have trouble with PATH that changes when doing sudo, see [http://stackove
 
     echo "alias sudo='sudo env PATH=$PATH'" >> ~/.bash_aliases
 
-Edit /etc/ssh/sshd_config and add the following to the bottom of the file:
-
-    PermitUserEnvironment yes
-Then reboot sshd by running:
-
-    /etc/init.d/ssh reload
-    
-
 Update and upgrade the system
 -------------------------------
 
@@ -205,7 +197,29 @@ Nokogiri dependencies
 Install Nokogiri gem
 
     sudo gem install nokogiri
+    
+Capistrano environment fixes
+----------------------------
 
+If your deploying with Capistrano, you must modify a few things to get it to use Ruby Enterprise and load the local users environment.
+
+Edit /etc/ssh/sshd_config and add the following to the bottom of the file:
+
+    PermitUserEnvironment yes
+Then reboot sshd by running:
+
+    /etc/init.d/ssh reload
+    
+Configuring the PATH
+
+Edit ~/.ssh/environment, and put something like this inside:
+
+    PATH=/opt/ruby/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games
+    
+**OR is it doesn't exist you can do this to add it with one command:**
+
+    echo "PATH=/opt/ruby/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games" > ~/.ssh/environment
+    
 Test a rails application with NGINX
 ----------------------------------
 
