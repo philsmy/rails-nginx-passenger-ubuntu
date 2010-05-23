@@ -1,7 +1,9 @@
-rails-nginx-passenger-ubuntu stack
+My rails-NGINX-ree-passenger-ubuntu stack
 ============================
 
-My notes on setting up a simple production server with Ubuntu 10.04 LTS, Nginx, Passenger, Ruby Enterprise Edition and Mysql for Rails 2.3.5
+My notes on setting up a simple production server with Ubuntu 10.04 LTS, NGINX, Passenger, Ruby Enterprise Edition and Mysql for Rails 2.3.5
+
+This guide assumes you have installed Ubuntu 10.04 LTS (with no modules (optional)) on a server somewhere and you have root access via sudo.
 
 Aliases
 -------
@@ -10,7 +12,7 @@ Aliases
     
 edit .bashrc and uncomment the loading of .bash_aliases
 
-If you have trouble with PATH that changes when doing sudo, see http://stackoverflow.com/questions/257616/sudo-changes-path-why then add the following line to the same file
+If you have trouble with PATH that changes when doing sudo, see [http://stackoverflow.com/questions/257616/sudo-changes-path-why](http://stackoverflow.com/questions/257616/sudo-changes-path-why) then add the following line to the same file
 
     echo "alias sudo='sudo env PATH=$PATH'" >> ~/.bash_aliases
 
@@ -103,51 +105,55 @@ Verify the ruby installation
     ruby -v
     ruby 1.8.7 (2009-06-12 patchlevel 174) [x86_64-linux], MBARI 0x6770, Ruby Enterprise Edition 20090928
 
+Update RubyGems
+---------------
+    
+    sudo gem update --system
 
 Installing git
 ----------------
 
     sudo apt-get install git-core
 
-Nginx
+NGINX
 -------
 
-Automatically install Nginx compiled with Passenger & SSL into /opt/nginx/
+Automatically install NGINX compiled with Passenger & SSL into /opt/NGINX/
 
-    /opt/ruby/bin/passenger-install-nginx-module --auto --prefix=/opt/nginx/ --auto-download --extra-configure-flags=--with-http_ssl_module
+    sudo /opt/ruby/bin/passenger-install-NGINX-module --auto --prefix=/opt/NGINX/ --auto-download --extra-configure-flags=--with-http_ssl_module
 
 
-Nginx init script
+NGINX init script
 -------------------
 
-More information on http://wiki.nginx.org/Nginx-init-ubuntu
+More information on http://wiki.NGINX.org/NGINX-init-ubuntu
 
     cd ~/src
-    git clone git://github.com/jnstq/rails-nginx-passenger-ubuntu.git
-    sudo mv rails-nginx-passenger-ubuntu/nginx/nginx /etc/init.d/nginx
-    sudo chown root:root /etc/init.d/nginx
+    git clone git://github.com/jnstq/rails-NGINX-passenger-ubuntu.git
+    sudo mv rails-NGINX-passenger-ubuntu/NGINX/NGINX /etc/init.d/NGINX
+    sudo chown root:root /etc/init.d/NGINX
     
-Verify that you can start and stop nginx with init script
+Verify that you can start and stop NGINX with init script
 
-    sudo /etc/init.d/nginx start
+    sudo /etc/init.d/NGINX start
     
-      * Starting Nginx Server...
+      * Starting NGINX Server...
       ...done.
     
-    sudo /etc/init.d/nginx status
+    sudo /etc/init.d/NGINX status
     
-      nginx found running with processes:  11511 11510
+      NGINX found running with processes:  11511 11510
     
-    sudo /etc/init.d/nginx stop
+    sudo /etc/init.d/NGINX stop
     
-      * Stopping Nginx Server...
+      * Stopping NGINX Server...
       ...done.
     
-    sudo /usr/sbin/update-rc.d -f nginx defaults
+    sudo /usr/sbin/update-rc.d -f NGINX defaults
     
 If you want, reboot and see so the webserver is starting as it should.
 
-Installning ImageMagick and RMagick
+Installning ImageMagick and RMagick (Optional)
 -----------------------------------
 
 If you want to install the latest version of ImageMagick. I used MiniMagick that shell-out to the mogrify command, worked really well for me.
@@ -182,14 +188,14 @@ Install RMagick
  
     sudo /opt/ruby/bin/ruby /opt/ruby/bin/gem install rmagick
 
-Install Bundler
+Install Bundler (Optional)
 ---------------
 
 Bundler is arguably the best ruby gem manager ever written. Install it!
 
     sudo gem install bundler
 
-Install Nokogiri
+Install Nokogiri (Optional)
 ----------------
 
 Nokogiri dependencies
@@ -200,7 +206,7 @@ Install Nokogiri gem
 
     sudo gem install nokogiri
 
-Test a rails applicaton with nginx
+Test a rails application with NGINX
 ----------------------------------
 
     rails -d mysql testapp
@@ -217,9 +223,9 @@ Check so the rails app start as normal
     
     ruby script/server
 
-    sudo vim /opt/nginx/conf/nginx.conf
+    sudo vim /opt/nginx/conf/NGINX.conf
     
-Add a new virutal host
+Add a new virtual host
 
     server {
         listen 80;
@@ -228,10 +234,10 @@ Add a new virutal host
         passenger_enabled on;
     }
     
-Restart nginx
+Restart NGINX
 
     sudo /etc/init.d/nginx restart
     
-Check you ipaddress and see if you can acess the rails application
+Check your ip address and see if you can access the rails application
         
 
