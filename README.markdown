@@ -120,28 +120,29 @@ NGINX init script
 
 More information on http://wiki.NGINX.org/NGINX-init-ubuntu
 
-    cd ~/src
-    git clone git://github.com/jnstq/rails-NGINX-passenger-ubuntu.git
-    sudo mv rails-NGINX-passenger-ubuntu/NGINX/NGINX /etc/init.d/NGINX
-    sudo chown root:root /etc/init.d/NGINX
+This command will download the latest version of my init script, copy it to /etc/init.d/nginx and update permissions.
+
+    sudo curl http://github.com/ivanvanderbyl/rails-nginx-passenger-ubuntu/raw/master/nginx/nginx -o /etc/init.d/nginx && sudo chmod +x /etc/init.d/nginx && sudo chown root:root /etc/init.d/nginx
     
 Verify that you can start and stop NGINX with init script
 
-    sudo /etc/init.d/NGINX start
+    sudo /etc/init.d/nginx start
     
-      * Starting NGINX Server...
+      * Starting nginx Server...
       ...done.
     
-    sudo /etc/init.d/NGINX status
+    sudo /etc/init.d/nginx status
     
       NGINX found running with processes:  11511 11510
     
-    sudo /etc/init.d/NGINX stop
+    sudo /etc/init.d/nginx stop
     
-      * Stopping NGINX Server...
+      * Stopping nginx Server...
       ...done.
-    
-    sudo /usr/sbin/update-rc.d -f NGINX defaults
+
+Add it to the startup routine:
+
+    sudo /usr/sbin/update-rc.d -f nginx defaults
     
 If you want, reboot and see so the webserver is starting as it should.
 
