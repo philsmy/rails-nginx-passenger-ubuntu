@@ -33,6 +33,18 @@ Verify that you have to correct date and time with
 
     date
 
+Configure locale
+----------------
+
+First check the current locale
+
+    /usr/bin/locale
+
+Set if necessary
+
+    sudo /usr/sbin/locale-gen en_US.UTF-8
+    sudo /usr/sbin/update-locale LANG=en_US.UTF-8
+
 Configure hostname
 -------------------
 
@@ -49,6 +61,11 @@ Write your-hostname in
 Verify that hostname is set
     
     hostname
+
+Install postgresql
+------------------
+
+    sudo aptitude -y install postgresql libpq-dev
 
 Install mysql
 ---------------
