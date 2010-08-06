@@ -129,7 +129,7 @@ NGINX
 
 Automatically install NGINX compiled with Passenger & SSL into /opt/NGINX/
 
-    sudo /opt/ruby/bin/passenger-install-nginx-module --auto --prefix=/opt/nginx/ --auto-download --extra-configure-flags=--with-http_ssl_module
+    sudo /opt/ruby/bin/passenger-install-nginx-module --auto --prefix=/opt/nginx/ --auto-download --extra-configure-flags="--with-http_ssl_module"
 
 
 NGINX init script
