@@ -1,9 +1,32 @@
 My rails-NGINX-ree-passenger-ubuntu stack
 ============================
 
-My notes on setting up a simple production server with Ubuntu 10.04 LTS, NGINX, Passenger, Ruby Enterprise Edition and Mysql for Rails 2.3.5
+My notes on setting up a simple production server with Ubuntu 8.04 LTS, NGINX, Passenger, Ruby Enterprise Edition and Mysql for Rails 2.3.5.
+This is for OST on eCore.
 
-This guide assumes you have installed Ubuntu 10.04 LTS (with no modules (optional)) on a server somewhere and you have root access via sudo.
+This guide assumes you have installed Ubuntu 8.04 LTS (with no modules (optional)) on a server somewhere and you have root access via sudo.
+
+AS ROOT - EARLY SETUP
+-------
+create admin user:
+	adduser admin
+or:
+you might have admin group already. find id (cat /etc/group) and do
+	adduser --gid admin_group_id admin
+
+visudo and put admin as rootable with no password. Put this at the end of the file!
+	
+	admin   ALL=(ALL) NOPASSWD: ALL
+
+Setup the keys
+
+	mkdir /home/admin/.ssh
+	chown -R admin:admin /home/admin/.ssh
+	chmod 0700 /home/admin/.ssh
+	cp .ssh/authorized_keys2 /home/admin/.ssh/.
+	chown -R admin:admin /home/admin/.ssh
+
+Logoff and reconnect as admin
 
 Aliases
 -------
@@ -114,6 +137,16 @@ Verify the ruby installation
     ruby -v
     ruby 1.8.7 (2009-06-12 patchlevel 174) [x86_64-linux], MBARI 0x6770, Ruby Enterprise Edition 20090928
 
+Get it working for sudo
+-----------------------
+
+Copy over some files (this is the easiest thing to do)
+
+	sudo ln -s /opt/ruby/bin/ruby /usr/local/bin/.
+	sudo ln -s /opt/ruby/bin/rake /usr/local/bin/.
+	sudo ln -s /opt/ruby/bin/gem /usr/local/bin/.
+
+
 Update RubyGems
 ---------------
     
@@ -127,6 +160,14 @@ Installing git
 NGINX
 -------
 
+Install this:
+
+	sudo apt-get install libcurl4-openssl-dev
+
+Turn off passive in wget - needed for ecore
+
+	echo 'passive_ftp=off' > ~/.wgetrc
+
 Automatically install NGINX compiled with Passenger & SSL into /opt/NGINX/
 
     sudo /opt/ruby/bin/passenger-install-nginx-module --auto --prefix=/opt/nginx/ --auto-download --extra-configure-flags="--with-http_ssl_module"
@@ -139,7 +180,10 @@ More information on http://wiki.NGINX.org/NGINX-init-ubuntu
 
 This command will download the latest version of my init script, copy it to /etc/init.d/nginx and update permissions.
 
-    sudo curl http://github.com/ivanvanderbyl/rails-nginx-passenger-ubuntu/raw/master/nginx/nginx -o /etc/init.d/nginx && sudo chmod +x /etc/init.d/nginx && sudo chown root:root /etc/init.d/nginx
+    cd
+		git clone git://github.com/jnstq/rails-nginx-passenger-ubuntu.git
+		sudo mv rails-nginx-passenger-ubuntu/nginx/nginx /etc/init.d/nginx
+		sudo chown root:root /etc/init.d/nginx
     
 Verify that you can start and stop NGINX with init script
 
