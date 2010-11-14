@@ -85,11 +85,6 @@ Verify that hostname is set
     
     hostname
 
-Install postgresql
-------------------
-
-    sudo aptitude -y install postgresql libpq-dev
-
 Install mysql
 ---------------
 
@@ -254,7 +249,7 @@ Install Nokogiri (Optional)
 
 Nokogiri dependencies
 
-    sudo apt-get install libxslt-dev libxml2-dev
+    sudo apt-get install libxslt1-dev libxml2-dev
 
 Install Nokogiri gem
 
@@ -317,3 +312,34 @@ Restart NGINX
 Check your ip address and see if you can access the rails application
         
 
+Create a Console File
+---------------------
+
+For convenience create a console file.
+
+		vi ~/.console
+		
+With this content
+
+		#!/bin/sh
+
+		export RAILS_ENV=production
+		cd /u/apps/media_kontrol/current
+		ruby script/console
+		
+You can no just log in and do ./console
+
+Generate ssh keys
+---------------------
+
+For connection to unfuddle
+	
+		ssh-keygen -t rsa
+		
+copy the pub key into unfuddle
+		
+		cat ~/.ssh/id_rsa.pub
+		
+check it works:
+
+		git ls-remote ssh://git@mediacontrol.unfuddle.com/mediacontrol/mc.git horse_screens
