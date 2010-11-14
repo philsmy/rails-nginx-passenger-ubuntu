@@ -271,39 +271,37 @@ Configuring the PATH
 
 Edit ~/.ssh/environment, and put something like this inside:
 
-    PATH=/opt/ruby/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games
+    PATH=/opt/ruby/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/opt/ruby/bin
     
 **OR is it doesn't exist you can do this to add it with one command:**
 
-    echo "PATH=/opt/ruby/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games" > ~/.ssh/environment
+    echo "PATH=/opt/ruby/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/opt/ruby/bin" > ~/.ssh/environment
     
-Test a rails application with NGINX
+Config NGINX
 ----------------------------------
 
-    rails -d mysql testapp
-    cd testapp
-    
-Enter your mysql password
-    
-    vim database.yml
-    rake db:create:all
-    ruby script/generate scaffold post title:string body:text
-    rake db:migrate RAILS_ENV=production
-    
-Check so the rails app start as normal
-    
-    ruby script/server
-
-    sudo vim /opt/nginx/conf/NGINX.conf
-    
+   
 Add a new virtual host
+	sudo vi /opt/nginx/conf/nginx.conf
+	
+Add our info
+	
+	server {
+         listen 80;
+         server_name 212.223.106.178;
+         root /u/apps/media_kontrol/current/public;
+         passenger_enabled on;
+         rack_env production;
+         if (-f $document_root/system/maintenance.html){
+                 rewrite  ^(.*)$  /system/maintenance.html break;
+         }
 
-    server {
-        listen 80;
-        # server_name www.mycook.com;
-        root /home/deploy/testapp/public;
-        passenger_enabled on;
-    }
+
+         if ($host ~* www\.(.*)) {
+                 set $host_without_www $1;
+                 rewrite ^(.*)$ http://$host_without_www$1 permanent;
+         }
+ 			}
     
 Restart NGINX
 
@@ -343,3 +341,17 @@ copy the pub key into unfuddle
 check it works:
 
 		git ls-remote ssh://git@mediacontrol.unfuddle.com/mediacontrol/mc.git horse_screens
+
+Gems
+----
+
+We are now using bundler. So as a pre-emptive strike, create the gem directory:
+
+	mkdir ~/.gems
+	
+Install Memcached
+-----------------
+
+Install and start:
+	sudo apt-get install memcached
+	memcached -d -u root
