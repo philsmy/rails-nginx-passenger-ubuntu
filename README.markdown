@@ -1,10 +1,9 @@
 My rails-NGINX-ree-passenger-ubuntu stack
 ============================
 
-My notes on setting up a simple production server with Ubuntu 8.04 LTS, NGINX, Passenger, Ruby Enterprise Edition and Mysql for Rails 2.3.5.
-This is for OST on eCore.
+My notes on setting up a simple production server with Ubuntu 10.04 LTS, NGINX, Passenger, Ruby Enterprise Edition and Mysql for Rails 3.
 
-This guide assumes you have installed Ubuntu 8.04 LTS (with no modules (optional)) on a server somewhere and you have root access via sudo.
+This guide assumes you have installed Ubuntu 10.04 LTS (with no modules (optional)) on a server somewhere and you have access via sudo with the default ubuntu user.
 
 AS UBUNTU - EARLY SETUP
 -------
