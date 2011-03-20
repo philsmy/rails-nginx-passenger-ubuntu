@@ -170,6 +170,10 @@ This command will download the latest version of my init script, copy it to /etc
 		git clone git://github.com/jnstq/rails-nginx-passenger-ubuntu.git
 		sudo mv rails-nginx-passenger-ubuntu/nginx/nginx /etc/init.d/nginx
 		sudo chown root:root /etc/init.d/nginx
+		
+I always edit this file and add
+		sleep 2
+at line 233 (in restart)
     
 Verify that you can start and stop NGINX with init script
 
@@ -204,6 +208,8 @@ If you want to install the latest version of ImageMagick. I used MiniMagick that
     sudo apt-get install libperl-dev gcc libjpeg62-dev libbz2-dev libtiff4-dev libwmf-dev libz-dev libpng12-dev libx11-dev libxt-dev libxext-dev libxml2-dev libfreetype6-dev liblcms1-dev libexif-dev perl libjasper-dev libltdl3-dev graphviz gs-gpl pkg-config
 
 Use wget to grab the source from ImageMagick.org.
+
+		ftp://ftp.imagemagick.org/pub/ImageMagick/ImageMagick.tar.gz
 
 Once the source is downloaded, uncompress it:
 
