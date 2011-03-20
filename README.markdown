@@ -22,7 +22,7 @@ Setup the keys
 	sudo mkdir /home/admin/.ssh
 	sudo chown -R admin:admin /home/admin/.ssh
 	sudo chmod 0700 /home/admin/.ssh
-	sudo cp .ssh/authorized_keys2 /home/admin/.ssh/.
+	sudo cp .ssh/authorized_keys /home/admin/.ssh/.
 	sudo chown -R admin:admin /home/admin/.ssh
 
 Logoff and reconnect as admin
@@ -234,7 +234,7 @@ Install Bundler (Optional)
 Bundler is arguably the best ruby gem manager ever written. Install it!
 
     sudo gem install bundler
-		sudo ln -s /opt/ruby/bin/bundler /usr/local/bin/.
+		sudo ln -s /opt/ruby/bin/bundle /usr/local/bin/.
 
 
 Install Nokogiri (Optional)
@@ -298,7 +298,7 @@ Create a Console File
 
 For convenience create a console file.
 
-		vi ~/.console
+		vi ~/console
 		
 With this content
 
@@ -323,7 +323,7 @@ copy the pub key into unfuddle
 		
 check it works:
 
-		git ls-remote ssh://git@toygaroo.unfuddle.com:toygaroo/tgr2.git master
+		git ls-remote ssh://git@toygaroo.unfuddle.com/toygaroo/tgr2.git master
 
 Gems
 ----
@@ -338,3 +338,10 @@ Install Memcached
 Install and start:
 	sudo apt-get install memcached
 	memcached -d -u root
+	
+Install Whenever
+-----------------
+If this machine is to have whenever schedules
+
+	sudo gem install whenever
+	sudo ln -s /opt/ruby/bin/whenever /usr/local/bin/.
