@@ -135,6 +135,7 @@ Copy over some files (this is the easiest thing to do)
 	sudo ln -s /opt/ruby/bin/ruby /usr/local/bin/.
 	sudo ln -s /opt/ruby/bin/rake /usr/local/bin/.
 	sudo ln -s /opt/ruby/bin/gem /usr/local/bin/.
+	sudo ln -s /opt/ruby/bin/bundle /usr/local/bin/.
 
 
 Update RubyGems
@@ -237,11 +238,7 @@ Install RMagick
 Install Bundler (Optional)
 ---------------
 
-Bundler is arguably the best ruby gem manager ever written. Install it!
-
-    sudo gem install bundler
-		sudo ln -s /opt/ruby/bin/bundle /usr/local/bin/.
-
+This is now done automatically by passenger.
 
 Install Nokogiri (Optional)
 ----------------
