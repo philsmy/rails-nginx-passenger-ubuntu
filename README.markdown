@@ -140,6 +140,7 @@ Copy over some files (this is the easiest thing to do)
 	sudo ln -s /opt/ruby/bin/ruby /usr/local/bin/.
 	sudo ln -s /opt/ruby/bin/rake /usr/local/bin/.
 	sudo ln -s /opt/ruby/bin/gem /usr/local/bin/.
+	sudo ln -s /opt/ruby/bin/bundle /usr/local/bin/.
 
 
 Update RubyGems
@@ -357,8 +358,6 @@ Install and start:
 Log Rotate
 ----------
 
-Rotate Log Files:
-+++++++++++++++
 create a file in /etc/logrotate.d/passenger
 
 	/u/apps/media_kontrol/shared/log/production.log {
