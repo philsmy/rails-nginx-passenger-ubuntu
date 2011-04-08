@@ -240,9 +240,7 @@ Install RMagick
 Install Bundler (Optional)
 ---------------
 
-Bundler is arguably the best ruby gem manager ever written. Install it!
-
-    sudo gem install bundler
+Now installed automatically by passenger
 
 Install Nokogiri (Optional)
 ----------------
@@ -355,3 +353,44 @@ Install Memcached
 Install and start:
 	sudo apt-get install memcached
 	memcached -d -u root
+	
+Log Rotate
+----------
+
+Rotate Log Files:
++++++++++++++++
+create a file in /etc/logrotate.d/passenger
+
+/u/apps/media_kontrol/shared/log/production.log {
+  daily
+  missingok
+  rotate 30
+  compress
+  delaycompress
+  sharedscripts
+  postrotate
+    touch /u/apps/media_kontrol/current/tmp/restart.txt
+  endscript
+}
+
+create a file in /etc/logrotate.d/nginx
+
+/opt/nginx/logs/*.log {
+  daily
+  missingok
+  rotate 30
+  compress
+  delaycompress
+  sharedscripts
+  postrotate
+    /etc/init.d/nginx restart
+  endscript
+}
+
+You can execute a debug run of logrotate with:
+logrotate -d /etc/logrotate.d/passenger
+logrotate -d /etc/logrotate.d/nginx
+
+You can force an rotations with:
+logrotate -f /etc/logrotate.d/passenger
+logrotate -f /etc/logrotate.d/nginx
