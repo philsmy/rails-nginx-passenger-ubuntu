@@ -181,6 +181,10 @@ This command will download the latest version of my init script, copy it to /etc
 		sudo mv rails-nginx-passenger-ubuntu/nginx/nginx /etc/init.d/nginx
 		sudo chown root:root /etc/init.d/nginx
     
+I always edit this file and add
+		sleep 2
+at line 233 (in restart)
+
 Verify that you can start and stop NGINX with init script
 
     sudo /etc/init.d/nginx start
