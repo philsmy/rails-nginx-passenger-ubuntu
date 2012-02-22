@@ -1,18 +1,17 @@
 My rails-NGINX-ree-passenger-ubuntu stack
 ============================
 
-My notes on setting up a simple production server with Ubuntu 8.04 LTS, NGINX, Passenger, Ruby Enterprise Edition and Mysql for Rails 2.3.5.
-This is for OST on eCore.
+My notes on setting up a simple production server with Ubuntu 10.04 LTS, NGINX, Passenger, Ruby Enterprise Edition and Mysql for Rails 3.
 
-This guide assumes you have installed Ubuntu 8.04 LTS (with no modules (optional)) on a server somewhere and you have root access via sudo.
+This guide assumes you have installed Ubuntu 10.04 LTS (with no modules (optional)) on a server somewhere and you have access via sudo with the default ubuntu user.
 
-AS ROOT - EARLY SETUP
+AS UBUNTU - EARLY SETUP
 -------
 create admin user:
-	adduser admin
+	sudo adduser admin
 or:
 you might have admin group already. find id (cat /etc/group) and do
-	adduser --gid admin_group_id admin
+	sudo adduser --gid admin_group_id admin
 
 visudo and put admin as rootable with no password. Put this at the end of the file!
 	
@@ -20,11 +19,11 @@ visudo and put admin as rootable with no password. Put this at the end of the fi
 
 Setup the keys
 
-	mkdir /home/admin/.ssh
-	chown -R admin:admin /home/admin/.ssh
-	chmod 0700 /home/admin/.ssh
-	cp .ssh/authorized_keys2 /home/admin/.ssh/.
-	chown -R admin:admin /home/admin/.ssh
+	sudo mkdir /home/admin/.ssh
+	sudo chown -R admin:admin /home/admin/.ssh
+	sudo chmod 0700 /home/admin/.ssh
+	sudo cp .ssh/authorized_keys /home/admin/.ssh/.
+	sudo chown -R admin:admin /home/admin/.ssh
 
 Logoff and reconnect as admin
 
@@ -34,10 +33,6 @@ Aliases
     echo "alias ll='ls -l'" >> ~/.bash_aliases
     
 edit .bashrc and uncomment the loading of .bash_aliases
-
-If you have trouble with PATH that changes when doing sudo, see [http://stackoverflow.com/questions/257616/sudo-changes-path-why](http://stackoverflow.com/questions/257616/sudo-changes-path-why) then add the following line to the same file
-
-    echo "alias sudo='sudo env PATH=$PATH'" >> ~/.bash_aliases
 
 Update and upgrade the system
 -------------------------------
@@ -160,10 +155,6 @@ Install this:
 
 	sudo apt-get install libcurl4-openssl-dev
 
-Turn off passive in wget - needed for ecore
-
-	echo 'passive_ftp=off' > ~/.wgetrc
-
 Automatically install NGINX compiled with Passenger & SSL into /opt/NGINX/
 
     sudo /opt/ruby/bin/passenger-install-nginx-module --auto --prefix=/opt/nginx/ --auto-download --extra-configure-flags="--with-http_ssl_module --with-http_gzip_static_module --without-mail_pop3_module --without-mail_smtp_module --without-mail_imap_module --with-http_stub_status_module"
@@ -180,6 +171,10 @@ This command will download the latest version of my init script, copy it to /etc
 		git clone git://github.com/jnstq/rails-nginx-passenger-ubuntu.git
 		sudo mv rails-nginx-passenger-ubuntu/nginx/nginx /etc/init.d/nginx
 		sudo chown root:root /etc/init.d/nginx
+		
+I always edit this file and add
+		sleep 2
+at line 233 (in restart)
     
 I always edit this file and add
 		sleep 2
@@ -207,7 +202,7 @@ Add it to the startup routine:
     
 If you want, reboot and see so the webserver is starting as it should.
 
-Installning ImageMagick and RMagick (Optional)
+Installing ImageMagick and RMagick (Optional)
 -----------------------------------
 
 If you want to install the latest version of ImageMagick. I used MiniMagick that shell-out to the mogrify command, worked really well for me.
@@ -219,6 +214,8 @@ If you want to install the latest version of ImageMagick. I used MiniMagick that
 
 Use wget to grab the source from ImageMagick.org.
 
+		ftp://ftp.imagemagick.org/pub/ImageMagick/ImageMagick.tar.gz
+
 Once the source is downloaded, uncompress it:
 
 
@@ -227,7 +224,7 @@ Once the source is downloaded, uncompress it:
 
 Now configure and make:
 
-    cd ImageMagick-6.5.0-0
+    cd ImageMagick-6.ZZZZ
     ./configure
     make
     sudo make install
@@ -245,7 +242,7 @@ Install RMagick
 Install Bundler (Optional)
 ---------------
 
-Now installed automatically by passenger
+This is done automatically by passenger.
 
 Install Nokogiri (Optional)
 ----------------
@@ -257,6 +254,13 @@ Nokogiri dependencies
 Install Nokogiri gem
 
     sudo gem install nokogiri
+
+Update Path
+-----------
+If you have trouble with PATH that changes when doing sudo, see [http://stackoverflow.com/questions/257616/sudo-changes-path-why](http://stackoverflow.com/questions/257616/sudo-changes-path-why) then add the following line to the same file
+
+    echo "alias sudo='sudo env PATH=$PATH'" >> ~/.bash_aliases
+
     
 Capistrano environment fixes
 ----------------------------
@@ -287,24 +291,7 @@ Config NGINX
 Add a new virtual host
 	sudo vi /opt/nginx/conf/nginx.conf
 	
-Add our info
-	
-	server {
-         listen 80;
-         server_name 212.223.106.178;
-         root /u/apps/media_kontrol/current/public;
-         passenger_enabled on;
-         rack_env production;
-         if (-f $document_root/system/maintenance.html){
-                 rewrite  ^(.*)$  /system/maintenance.html break;
-         }
-
-
-         if ($host ~* www\.(.*)) {
-                 set $host_without_www $1;
-                 rewrite ^(.*)$ http://$host_without_www$1 permanent;
-         }
- 			}
+Add our info. Grab the nginx.conf file from the doc/ of the source
     
 Restart NGINX
 
@@ -318,15 +305,15 @@ Create a Console File
 
 For convenience create a console file.
 
-		vi ~/.console
+		vi ~/console
 		
 With this content
 
 		#!/bin/sh
 
 		export RAILS_ENV=production
-		cd /u/apps/media_kontrol/current
-		ruby script/console
+		cd /u/apps/toygaroo/current
+		rails c
 		
 You can no just log in and do ./console
 
@@ -343,7 +330,7 @@ copy the pub key into unfuddle
 		
 check it works:
 
-		git ls-remote ssh://git@mediacontrol.unfuddle.com/mediacontrol/mc.git horse_screens
+		git ls-remote ssh://git@toygaroo.unfuddle.com/toygaroo/tgr2.git master
 
 Gems
 ----
@@ -397,3 +384,10 @@ You can execute a debug run of logrotate with:
 You can force an rotations with:
 	logrotate -f /etc/logrotate.d/passenger
 	logrotate -f /etc/logrotate.d/nginx
+
+Install Whenever
+-----------------
+If this machine is to have whenever schedules
+
+	sudo gem install whenever
+	sudo ln -s /opt/ruby/bin/whenever /usr/local/bin/.
