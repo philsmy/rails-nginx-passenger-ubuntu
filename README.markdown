@@ -8,9 +8,12 @@ This guide assumes you have installed Ubuntu 10.04 LTS (with no modules (optiona
 AS UBUNTU - EARLY SETUP
 -------
 create admin user:
+
 	sudo adduser admin
+	
 or:
 you might have admin group already. find id (cat /etc/group) and do
+
 	sudo adduser --gid admin_group_id admin
 
 visudo and put admin as rootable with no password. Put this at the end of the file!
@@ -83,9 +86,10 @@ Verify that hostname is set
 Install mysql
 ---------------
 
-This should be installed before Ruby Enterprise Edition becouse that will install the mysql gem.
+This should be installed before Ruby Enterprise Edition because that will install the mysql gem.
 
-    sudo apt-get install mysql-server libmysqlclient15-dev    
+    sudo apt-get install mysql-server libmysqlclient15-dev   
+ 
 Gemrc
 -------
 
@@ -168,18 +172,16 @@ More information on http://wiki.NGINX.org/NGINX-init-ubuntu
 This command will download the latest version of my init script, copy it to /etc/init.d/nginx and update permissions.
 
     cd
-		git clone git://github.com/jnstq/rails-nginx-passenger-ubuntu.git
-		sudo mv rails-nginx-passenger-ubuntu/nginx/nginx /etc/init.d/nginx
-		sudo chown root:root /etc/init.d/nginx
+	git clone git://github.com/jnstq/rails-nginx-passenger-ubuntu.git
+	sudo mv rails-nginx-passenger-ubuntu/nginx/nginx /etc/init.d/nginx
+	sudo chown root:root /etc/init.d/nginx
 		
 I always edit this file and add
-		sleep 2
+
+	sleep 2
+	
 at line 233 (in restart)
     
-I always edit this file and add
-		sleep 2
-at line 233 (in restart)
-
 Verify that you can start and stop NGINX with init script
 
     sudo /etc/init.d/nginx start
@@ -305,32 +307,26 @@ Create a Console File
 
 For convenience create a console file.
 
-		vi ~/console
+	vi ~/console
 		
 With this content
 
-		#!/bin/sh
+	#!/bin/sh
 
-		export RAILS_ENV=production
-		cd /u/apps/toygaroo/current
-		rails c
+	export RAILS_ENV=production
+	cd /u/apps/media_kontrol/current
+	bundle exec rails c
 		
 You can no just log in and do ./console
 
 Generate ssh keys
 ---------------------
 
-For connection to unfuddle
-	
-		ssh-keygen -t rsa
-		
-copy the pub key into unfuddle
-		
-		cat ~/.ssh/id_rsa.pub
+Copy in the id_rsa and id_rsa.pub to ~/.ssh
 		
 check it works:
 
-		git ls-remote ssh://git@toygaroo.unfuddle.com/toygaroo/tgr2.git master
+	git ls-remote ssh://git@mediacontrol.unfuddle.com/mediacontrol/mcr3.git master
 
 Gems
 ----
@@ -343,6 +339,7 @@ Install Memcached
 -----------------
 
 Install and start:
+
 	sudo apt-get install memcached
 	memcached -d -u root
 	
@@ -378,10 +375,12 @@ create a file in /etc/logrotate.d/nginx
 	}
 
 You can execute a debug run of logrotate with:
+
 	logrotate -d /etc/logrotate.d/passenger
 	logrotate -d /etc/logrotate.d/nginx
 
 You can force an rotations with:
+
 	logrotate -f /etc/logrotate.d/passenger
 	logrotate -f /etc/logrotate.d/nginx
 
