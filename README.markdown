@@ -195,21 +195,13 @@ Automatically install NGINX compiled with Passenger & SSL into /opt/NGINX/
 NGINX init script
 -------------------
 
-More information on http://wiki.NGINX.org/NGINX-init-ubuntu
-
 This command will download the latest version of my init script, copy it to /etc/init.d/nginx and update permissions.
 
     cd
-	git clone git://github.com/jnstq/rails-nginx-passenger-ubuntu.git
+	git clone git://github.com/philsmy/rails-nginx-passenger-ubuntu.git
 	sudo mv rails-nginx-passenger-ubuntu/nginx/nginx /etc/init.d/nginx
 	sudo chown root:root /etc/init.d/nginx
 		
-I always edit this file and add
-
-	sleep 2
-	
-at line 233 (in restart)
-    
 Verify that you can start and stop NGINX with init script
 
     sudo /etc/init.d/nginx start
