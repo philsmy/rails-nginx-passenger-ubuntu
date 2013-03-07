@@ -9,12 +9,7 @@ AS UBUNTU - EARLY SETUP
 -------
 create admin user:
 
-	sudo adduser admin
-	
-or:
-you might have admin group already. find id (cat /etc/group) and do
-
-	sudo adduser --gid admin_group_id admin
+	useradd -m -k /etc/skel -d /home/admin -G sudo -s /bin/bash admin
 
 visudo and put admin as rootable with no password. Put this at the end of the file!
 	
@@ -25,7 +20,7 @@ Setup the keys
 	sudo mkdir /home/admin/.ssh
 	sudo chown -R admin:admin /home/admin/.ssh
 	sudo chmod 0700 /home/admin/.ssh
-	sudo cp .ssh/authorized_keys /home/admin/.ssh/.
+	sudo cp .ssh/authorized_keys /home/admin/.ssh/. # copy keys from root... maybe you need something different
 	sudo chown -R admin:admin /home/admin/.ssh
 
 Logoff and reconnect as admin
@@ -89,79 +84,112 @@ Install mysql
 This should be installed before Ruby Enterprise Edition because that will install the mysql gem.
 
     sudo apt-get install mysql-server libmysqlclient15-dev   
- 
+
+Install Packages
+----------------
+
+	sudo apt-get install build-essential libssl-dev libreadline-dev libcurl4-openssl-dev libpcre3-dev
+
 Gemrc
 -------
 
 Add the following lines to ~/.gemrc, this will speed up gem installation and prevent rdoc and ri from being generated, this is not nessesary in the production environment.
 
     ---
-    :sources:
-    - http://gems.rubyforge.org
-    - http://gems.github.com
-    gem: --no-ri --no-rdoc
+	:verbose: true
+	:bulk_threshold: 1000
+	install: --no-ri --no-rdoc --env-shebang
+	:sources:
+	- http://gemcutter.org
+	- http://gems.rubyforge.org/
+	- http://gems.github.com
+	:benchmark: false
+	:backtrace: false
+	update: --no-ri --no-rdoc --env-shebang
+	:update_sources: true
 
 
-Ruby Enterprise Edition
-------------------------
+Capistrano environment fixes
+----------------------------
 
-Check for newer version at [http://www.rubyenterpriseedition.com/download.html](http://www.rubyenterpriseedition.com/download.html)
+If your deploying with Capistrano, you must modify a few things to get it to use Ruby Enterprise and load the local users environment.
 
-Install package required by ruby enterprise, C compiler, Zlib development headers, OpenSSL development headers, GNU Readline development headers
+Edit /etc/ssh/sshd_config and add the following to the bottom of the file:
 
-    sudo apt-get install build-essential zlib1g-dev libssl-dev libreadline5-dev
+    PermitUserEnvironment yes
+Then reboot sshd by running:
 
-Download and install Ruby Enterprise Edition
+    /etc/init.d/ssh reload
 
-    wget http://rubyforge.org/frs/download.php/66162/ruby-enterprise-X.X.X-ZZZZ.ZZ.tar.gz
-    tar xvfz ruby-enterprise-X.X.X-ZZZZ.ZZ.tar.gz 
-    rm ruby-enterprise-X.X.X-ZZZZ.ZZ.tar.gz 
-    cd ruby-enterprise-X.X.X-ZZZZ.ZZ/
-    sudo ./installer
-    
-    
-Change target folder to /opt/ruby for easier upgrade later on
+Configuring the PATH
 
-Add Ruby Enterprise bin to PATH
+Edit ~/.ssh/environment, and put something like this inside:
 
-    echo "export PATH=/opt/ruby/bin:$PATH" >> ~/.profile && . ~/.profile
-    
-Verify the ruby installation
+    PATH=/opt/ruby/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/opt/ruby/bin
 
-    ruby -v
-    ruby 1.8.7 (2009-06-12 patchlevel 174) [x86_64-linux], MBARI 0x6770, Ruby Enterprise Edition 20090928
+**OR is it doesn't exist you can do this to add it with one command:**
 
-Get it working for sudo
------------------------
+    echo "PATH=/opt/ruby/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/opt/ruby/bin" > ~/.ssh/environment
 
-Copy over some files (this is the easiest thing to do)
+Installing RVM
+--------------
 
-	sudo ln -s /opt/ruby/bin/ruby /usr/local/bin/.
-	sudo ln -s /opt/ruby/bin/rake /usr/local/bin/.
-	sudo ln -s /opt/ruby/bin/gem /usr/local/bin/.
-	sudo ln -s /opt/ruby/bin/bundle /usr/local/bin/.
+We already have rvm install scripts in our capistrano deploy. They came from [wayneeseguin on github](https://github.com/wayneeseguin/rvm-capistrano).
+FYI to your deploy.rb just add these:
 
+	set :rvm_ruby_string, ENV['GEM_HOME'].gsub(/.*\//,"")
+	require "rvm/capistrano"                               # Load RVM's capistrano plugin.
+    before 'deploy:setup', 'rvm:install_rvm'
+
+Then you can do
+	
+	cap rvm:install_rvm
+	cap rvm:install_ruby
+	
+To install first rvm and then the ruby you need
+
+	vi ~/.rvmrc
+
+To have
+
+	rvm_trust_rvmrcs_flag=1
+	
+And
+
+	sudo vi /etc/environment
+	
+To add
+
+	RAILS_ENV=production
+	
+Finally
+
+	rvm use --default ruby-1.9.3-p362
+	
+(Or whatever version you need)
 
 Update RubyGems
 ---------------
     
     sudo gem update --system
+	gem update
 
 Installing git
 ----------------
 
     sudo apt-get install git-core
 
+Passenger
+---------
+
+	gem install passenger
+
 NGINX
 -------
 
-Install this:
-
-	sudo apt-get install libcurl4-openssl-dev
-
 Automatically install NGINX compiled with Passenger & SSL into /opt/NGINX/
 
-    sudo /opt/ruby/bin/passenger-install-nginx-module --auto --prefix=/opt/nginx/ --auto-download --extra-configure-flags="--with-http_ssl_module --with-http_gzip_static_module --without-mail_pop3_module --without-mail_smtp_module --without-mail_imap_module --with-http_stub_status_module"
+    rvmsudo passenger-install-nginx-module --auto --prefix=/opt/nginx/ --auto-download --extra-configure-flags="--with-http_ssl_module --with-http_gzip_static_module --without-mail_pop3_module --without-mail_smtp_module --without-mail_imap_module --with-http_stub_status_module"
 
 
 NGINX init script
@@ -264,27 +292,6 @@ If you have trouble with PATH that changes when doing sudo, see [http://stackove
     echo "alias sudo='sudo env PATH=$PATH'" >> ~/.bash_aliases
 
     
-Capistrano environment fixes
-----------------------------
-
-If your deploying with Capistrano, you must modify a few things to get it to use Ruby Enterprise and load the local users environment.
-
-Edit /etc/ssh/sshd_config and add the following to the bottom of the file:
-
-    PermitUserEnvironment yes
-Then reboot sshd by running:
-
-    /etc/init.d/ssh reload
-    
-Configuring the PATH
-
-Edit ~/.ssh/environment, and put something like this inside:
-
-    PATH=/opt/ruby/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/opt/ruby/bin
-    
-**OR is it doesn't exist you can do this to add it with one command:**
-
-    echo "PATH=/opt/ruby/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/opt/ruby/bin" > ~/.ssh/environment
     
 Config NGINX
 ----------------------------------
